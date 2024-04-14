@@ -1,13 +1,33 @@
 {
+  "root": true,
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint", "prettier"],
   "parserOptions": {
-    "project": "./tsconfig.json"
+    "project": "./tsconfig.json",
+    "ignorePatterns": [".eslintrc.js"]
+  },
+  "env": {
+    "browser": true,
+    "node": true
   },
   "extends": [
     "next/core-web-vitals",
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended",
-    "prettier/@typescript-eslint"
-  ]
+    "prettier/@typescript-eslint",
+    "prettier"
+  ],
+  "rules": {
+    "import/no-unresolved": "warn",
+    "prettier/prettier": [
+      "warn",
+      {
+        "semi": true,
+        "printWidth": 80,
+        "tabWidth": 2,
+        "trailingComma": "all",
+        "singleQuote": false
+      }
+    ]
+  }
 }
