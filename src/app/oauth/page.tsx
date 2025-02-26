@@ -12,7 +12,7 @@ const OAuthPage = () => {
   useEffect(()=>{
 const kakaoLogin = async () => {
   try {
-      const data = await axios.get("http://localhost:8080/auth/sign-in/oauth2/kakao", {params: {code}})
+      const data = await axios.get("http://localhost:8080/auth/sign-in/kakao", {params: {code}})
 console.log(data)
   }
   catch(err){
