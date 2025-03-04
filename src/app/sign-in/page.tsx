@@ -1,5 +1,7 @@
 "use client";
 
+import kakaoLoginImg from "@/assets/images/kakao_login_medium_wide.png"
+
 const SignInPage = () => {
   const kakaoRestApiKey = process.env.KAKAO_REST_API_KEY;
   const kakaoLoginRedirectUri = process.env.KAKAO_LOGIN_REDIRECT_URI;
@@ -7,7 +9,7 @@ const SignInPage = () => {
 
   return (
     <a href={kakaoAuthUrl}>
-      <button>카카오 로그인</button>
+     <img src={kakaoLoginImg.src} alt="카카오 로그인"/>
     </a>
   );
 };
