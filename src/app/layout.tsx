@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import './globals.css'
+import clsx from "clsx";
 
 export const metadata: Metadata = {
   title: "ZZOL",
@@ -13,7 +14,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="kr">
-      <body>{children}</body>
+      <body className={clsx("bg-slate-200", "flex flex-row justify-center")}>
+        <div className={clsx("content", "bg-white", "max-w-[480px] w-full", "min-h-screen")}>
+          {children}
+        </div>
+      </body>
     </html>
   );
 }
