@@ -1,4 +1,6 @@
 "use client";
+import Image from "next/image";
+import kakaotalk from "../../asset/kakao_login_medium_wide.png";
 
 const SignInPage = () => {
   const kakaoRestApiKey = process.env.KAKAO_REST_API_KEY;
@@ -7,7 +9,7 @@ const SignInPage = () => {
 
   return (
     <a href={kakaoAuthUrl}>
-      <button>카카오 로그인</button>
+      <Image src={kakaotalk} alt={""} />
     </a>
   );
 };
