@@ -14,10 +14,10 @@
     "next/core-web-vitals",
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended",
-    "prettier/@typescript-eslint",
     "prettier"
   ],
   "rules": {
+    "strict": "error",
     "import/no-unresolved": "warn",
     "prettier/prettier": [
       "warn",
