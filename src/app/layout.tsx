@@ -19,7 +19,7 @@ export default function RootLayout({
           className={clsx(
             "content",
             "bg-white",
-            "max-w-[480px] w-full",
+            "max-w-[480px] w-full overflow-hidden break-all",
             "min-h-screen",
           )}
         >
