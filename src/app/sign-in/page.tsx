@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import kakaoLoginImg from "@/assets/images/kakao_login_medium_wide.png";

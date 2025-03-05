@@ -54,7 +54,7 @@ const SignInPage = () => {
 
     kakaoIdInput.value = kakaoId || "";
     emailInput.value = email || "";
-  }, []);
+  }, [email, kakaoId]);
 
   return (
     <div>
