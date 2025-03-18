@@ -1,5 +1,6 @@
 "use client";
 
+import { FormItem } from "@/components/FormItem";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
 import { FormEvent, useEffect } from "react";
@@ -59,13 +60,18 @@ const SignInPage = () => {
   return (
     <div>
       <form action="" onSubmit={handleOnSubmit}>
-        <input name="kakaoId" id="kakaoId" required disabled />
-        <br />
-        <input name="nickname" id="nickname" required />
-        <br />
-        <input type="email" id="email" name="email" required />
-        <br />
-        <input type="date" name="birthDate" id="birthDate" required />
+        <FormItem name="kakaoId" required hidden>
+          <input />
+        </FormItem>
+        <FormItem label="닉네임" name="nickname" required>
+          <input />
+        </FormItem>
+        <FormItem label="이메일" name="email" required>
+          <input type="email" />
+        </FormItem>
+        <FormItem label="생년월일" name="birthDate" required>
+          <input type="date" />
+        </FormItem>
         <br />
         <button type="submit">카카오 회원가입</button>
       </form>
