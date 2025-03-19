@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 
 interface FormItemProps {
   label?: ReactNode;
-  name: string;
+  name?: string;
   hidden?: boolean;
   required?: boolean;
   children: ReactElement;
