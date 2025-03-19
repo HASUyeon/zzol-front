@@ -18,14 +18,15 @@ export const FormItem = ({
   required,
 }: FormItemProps) => {
   return (
-    <div className={clsx(hidden ? "hidden" : "")}>
+    <div className={clsx(hidden ? "hidden" : "w-full flex flex-col gap-[8px]")}>
       <div>{label}</div>
-      <div>
+      <div className="w-full">
         {React.Children.map(children, (child: ReactElement) =>
           cloneElement(child, {
             name: name,
             id: name,
             required: required,
+            className: clsx("w-full"),
           }),
         )}
       </div>
