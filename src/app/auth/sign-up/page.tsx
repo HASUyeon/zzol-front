@@ -3,7 +3,8 @@
 import { Form } from "@/components/Form";
 import { FormItem } from "@/components/FormItem";
 import axios from "axios";
-import { useSearchParams } from "next/navigation";
+import { setCookie } from "cookies-next";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
 interface SignUpRequest {
@@ -14,6 +15,8 @@ interface SignUpRequest {
 }
 
 const SignInPage = () => {
+  const router = useRouter();
+
   const searchParams = useSearchParams();
   console.log(searchParams);
   const kakaoId = searchParams.get("kakaoId");
@@ -26,7 +29,13 @@ const SignInPage = () => {
         "http://localhost:8080/auth/sign-up/kakao",
         values,
       );
-      console.log(response);
+      if (response.data.token) {
+        console.log("sign-up token", response.data.token);
+        setCookie("member", response.data.member);
+        setCookie("token", response.data.token.accessToken);
+        setCookie("refreshToken", response.data.token.refreshToken);
+        router.push("/");
+      }
     } catch (e) {
       console.log(e);
     }

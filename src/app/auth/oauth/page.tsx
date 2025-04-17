@@ -1,6 +1,7 @@
 "use client";
 
 import axios from "axios";
+import { setCookie } from "cookies-next";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -24,8 +25,19 @@ const OAuthPage = () => {
         const email = data.kakaoAccount.email;
         if (!data.isRegistered) {
           router.push(
-            `/sign-up?${new URLSearchParams({ kakaoId, email }).toString()}`,
+            `/auth/sign-up?${new URLSearchParams({
+              kakaoId,
+              email,
+            }).toString()}`,
           ); // ✅ query를 URL 문자열로 변환
+        } else {
+          if (data.token) {
+            console.log("sign-in token", data.token);
+            setCookie("member", data.member);
+            setCookie("token", data.token.accessToken);
+            setCookie("refreshToken", data.token.refreshToken);
+            router.push("/");
+          }
         }
       } catch (err) {
         console.log(err);
