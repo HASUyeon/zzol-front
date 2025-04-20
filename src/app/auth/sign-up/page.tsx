@@ -2,8 +2,8 @@
 
 import { Form } from "@/components/Form";
 import { FormItem } from "@/components/FormItem";
+import { setAuthInfoCookie } from "@/utils/token-utils";
 import axios from "axios";
-import { setCookie } from "cookies-next";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
@@ -31,9 +31,11 @@ const SignInPage = () => {
       );
       if (response.data.token) {
         console.log("sign-up token", response.data.token);
-        setCookie("member", response.data.member);
-        setCookie("token", response.data.token.accessToken);
-        setCookie("refreshToken", response.data.token.refreshToken);
+        setAuthInfoCookie({
+          accessToken: response.data.token.accessToken,
+          refreshToken: response.data.token.refreshToken,
+          member: response.data.member,
+        });
         router.push("/");
       }
     } catch (e) {

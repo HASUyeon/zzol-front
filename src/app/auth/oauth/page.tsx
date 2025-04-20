@@ -1,8 +1,8 @@
 "use client";
 
 import { pageRoutes } from "@/utils/page-utils";
+import { setAuthInfoCookie } from "@/utils/token-utils";
 import axios from "axios";
-import { setCookie } from "cookies-next";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -34,9 +34,11 @@ const OAuthPage = () => {
         } else {
           if (data.token) {
             console.log("sign-in token", data.token);
-            setCookie("member", data.member);
-            setCookie("token", data.token.accessToken);
-            setCookie("refreshToken", data.token.refreshToken);
+            setAuthInfoCookie({
+              accessToken: data.token.accessToken,
+              refreshToken: data.token.refreshToken,
+              member: data.member,
+            });
             router.push("/");
           }
         }
