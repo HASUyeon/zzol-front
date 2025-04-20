@@ -1,5 +1,6 @@
 "use client";
 
+import { pageRoutes } from "@/utils/page-utils";
 import axios from "axios";
 import { setCookie } from "cookies-next";
 import { useSearchParams } from "next/navigation";
@@ -25,7 +26,7 @@ const OAuthPage = () => {
         const email = data.kakaoAccount.email;
         if (!data.isRegistered) {
           router.push(
-            `/auth/sign-up?${new URLSearchParams({
+            `${pageRoutes.signUp}?${new URLSearchParams({
               kakaoId,
               email,
             }).toString()}`,

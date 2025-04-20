@@ -1,15 +1,20 @@
 import { NextResponse, NextRequest } from "next/server";
+import {
+  pageForOnlyGuest,
+  pageForOnlyMember,
+  pageRoutes,
+} from "./utils/page-utils";
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (!request.cookies.get("token") || !request.cookies.get("refreshToken")) {
-    if (!pathname.startsWith("/auth"))
-      return NextResponse.redirect(new URL("/auth/sign-in", request.url));
+    if (pageForOnlyMember.includes(pathname))
+      return NextResponse.redirect(new URL(pageRoutes.signIn, request.url));
     return NextResponse.next();
   } else {
-    if (pathname.startsWith("/auth"))
-      return NextResponse.redirect(new URL("/", request.url));
+    if (pageForOnlyGuest.includes(pathname))
+      return NextResponse.redirect(new URL(pageRoutes.root, request.url));
     return NextResponse.next();
   }
 }
