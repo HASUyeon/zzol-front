@@ -3,10 +3,15 @@ import { NextResponse, NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (pathname === "/")
-    return NextResponse.redirect(new URL("/sign-in", request.url));
-
-  return NextResponse.next();
+  if (!request.cookies.get("token") || !request.cookies.get("refreshToken")) {
+    if (!pathname.startsWith("/auth"))
+      return NextResponse.redirect(new URL("/auth/sign-in", request.url));
+    return NextResponse.next();
+  } else {
+    if (pathname.startsWith("/auth"))
+      return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.next();
+  }
 }
 
 export const config = {
