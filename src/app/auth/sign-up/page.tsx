@@ -1,9 +1,10 @@
 "use client";
 
+import request from "@/api/request";
+import { apiRoutes } from "@/api/routes";
 import { Form } from "@/components/Form";
 import { FormItem } from "@/components/FormItem";
 import { setAuthInfoCookie } from "@/utils/token-utils";
-import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
@@ -25,16 +26,13 @@ const SignInPage = () => {
   const handleOnSubmit = async (values: SignUpRequest) => {
     console.log(values);
     try {
-      const response = await axios.post(
-        "http://localhost:8080/auth/sign-up/kakao",
-        values,
-      );
-      if (response.data.token) {
-        console.log("sign-up token", response.data.token);
+      const data = await request.post(apiRoutes.signInKakao, values);
+      if (data.token) {
+        console.log("sign-up token", data.token);
         setAuthInfoCookie({
-          accessToken: response.data.token.accessToken,
-          refreshToken: response.data.token.refreshToken,
-          member: response.data.member,
+          accessToken: data.token.accessToken,
+          refreshToken: data.token.refreshToken,
+          member: data.member,
         });
         router.push("/");
       }

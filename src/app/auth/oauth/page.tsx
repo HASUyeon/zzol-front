@@ -1,8 +1,9 @@
 "use client";
 
+import request from "@/api/request";
+import { apiRoutes } from "@/api/routes";
 import { pageRoutes } from "@/utils/page-utils";
 import { setAuthInfoCookie } from "@/utils/token-utils";
-import axios from "axios";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -17,11 +18,10 @@ const OAuthPage = () => {
   useEffect(() => {
     const kakaoLogin = async () => {
       try {
-        const { data } = await axios.get(
-          "http://localhost:8080/auth/sign-in/kakao",
-          { params: { code } },
-        );
-        console.log(data);
+        console.log(apiRoutes.signInKakao);
+        const data = await request.get(apiRoutes.signInKakao, {
+          params: { code },
+        });
         const kakaoId = data.kakaoId;
         const email = data.kakaoAccount.email;
         if (!data.isRegistered) {
