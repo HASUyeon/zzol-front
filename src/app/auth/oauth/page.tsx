@@ -1,7 +1,6 @@
 "use client";
 
-import request from "@/api/request";
-import { apiRoutes } from "@/api/routes";
+import { useGetSignIn } from "@/api/hooks/auth";
 import { pageRoutes } from "@/utils/page-utils";
 import { setAuthInfoCookie } from "@/utils/token-utils";
 import { useSearchParams } from "next/navigation";
@@ -12,42 +11,50 @@ const OAuthPage = () => {
   const router = useRouter();
 
   const searchParams = useSearchParams();
-  console.log(searchParams);
   const code = searchParams.get("code");
+
+  const { mutate } = useGetSignIn();
 
   useEffect(() => {
     const kakaoLogin = async () => {
-      try {
-        console.log(apiRoutes.signInKakao);
-        const data = await request.get(apiRoutes.signInKakao, {
-          params: { code },
-        });
-        const kakaoId = data.kakaoId;
-        const email = data.kakaoAccount.email;
-        if (!data.isRegistered) {
-          router.push(
-            `${pageRoutes.signUp}?${new URLSearchParams({
-              kakaoId,
-              email,
-            }).toString()}`,
-          ); // ✅ query를 URL 문자열로 변환
-        } else {
-          if (data.token) {
-            console.log("sign-in token", data.token);
-            setAuthInfoCookie({
-              accessToken: data.token.accessToken,
-              refreshToken: data.token.refreshToken,
-              member: data.member,
-            });
-            router.push("/");
-          }
-        }
-      } catch (err) {
-        console.log(err);
-      }
+      if (code)
+        mutate(
+          { code },
+          {
+            onSuccess: (res) => {
+              const kakaoId = res.kakaoId.toString();
+              const email = res?.kakaoAccount?.email;
+              if (!res.isRegistered && kakaoId && email) {
+                router.push(
+                  `${pageRoutes.signUp}?${new URLSearchParams({
+                    kakaoId,
+                    email,
+                  }).toString()}`,
+                );
+              } else {
+                if (
+                  res.token?.accessToken &&
+                  res.token.refreshToken &&
+                  res.member
+                ) {
+                  setAuthInfoCookie({
+                    accessToken: res.token.accessToken,
+                    refreshToken: res.token.refreshToken,
+                    member: res.member,
+                  });
+                  router.push("/");
+                }
+              }
+            },
+            onError: (err) => {
+              console.log(err);
+            },
+          },
+        );
     };
     kakaoLogin();
   }, []);
+
   return (
     <div>
       <h1>OAuth Page</h1>

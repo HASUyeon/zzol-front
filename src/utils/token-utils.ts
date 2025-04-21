@@ -1,3 +1,4 @@
+import { Member } from "@/api/model";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { env } from "process";
 
@@ -12,11 +13,8 @@ export const setAuthInfoCookie = ({
 }: {
   accessToken: string;
   refreshToken: string;
-  member: {
-    memberName: string;
-  };
+  member: Member;
 }) => {
-  console.log(tokenName);
   setCookie(tokenName, accessToken);
   setCookie(refreshTokenName, refreshToken);
   setCookie(memberName, member);
