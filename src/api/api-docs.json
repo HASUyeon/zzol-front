@@ -1,0 +1,202 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "ZZOL API",
+    "description": "ZZOL api 목록",
+    "version": "1.0.0"
+  },
+  "servers": [
+    { "url": "http://localhost:8080", "description": "Generated server url" }
+  ],
+  "security": [{ "JWT": [] }],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "로그인, 회원가입 등 비로그인 회원이 이용"
+    }
+  ],
+  "paths": {
+    "/auth/sign-up/kakao": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "카카오 회원가입",
+        "description": "카카오 계정과 회원가입 페이지에서 작성한 정보로 회원 등록",
+        "operationId": "kakaoSignUp",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SignUpRequestDto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/SignUpResponseDto" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/sign-in/kakao": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "카카오 로그인",
+        "description": "프론트에서 전달한 인가 코드로 회원 여부 조회, 액세스 토큰 발급",
+        "operationId": "kakaoLogin",
+        "parameters": [
+          { "name": "code", "in": "query", "description": "카카오 인가코드" }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/SignInResponseDto" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SignUpRequestDto": {
+        "required": ["birthDate", "email", "kakaoId", "nickname"],
+        "type": "object",
+        "properties": {
+          "kakaoId": {
+            "type": "integer",
+            "description": "카카오 회원번호",
+            "format": "int64"
+          },
+          "nickname": {
+            "maxLength": 20,
+            "minLength": 1,
+            "type": "string",
+            "description": "닉네임"
+          },
+          "email": { "type": "string", "description": "이메일(카카오 이메일)" },
+          "birthDate": {
+            "type": "string",
+            "description": "생년월일",
+            "format": "date"
+          }
+        }
+      },
+      "AuthTokens": {
+        "type": "object",
+        "properties": {
+          "accessToken": { "type": "string" },
+          "refreshToken": { "type": "string" },
+          "grantType": { "type": "string" },
+          "expiresIn": { "type": "integer", "format": "int64" }
+        },
+        "description": "토큰"
+      },
+      "Member": {
+        "required": [
+          "birthDate",
+          "createDt",
+          "email",
+          "kakaoId",
+          "memberNo",
+          "memberState",
+          "nickname"
+        ],
+        "type": "object",
+        "properties": {
+          "memberNo": {
+            "type": "integer",
+            "description": "회원번호",
+            "format": "int32"
+          },
+          "kakaoId": {
+            "type": "integer",
+            "description": "카카오 회원번호",
+            "format": "int64"
+          },
+          "name": { "type": "string", "description": "이름" },
+          "nickname": {
+            "maxLength": 20,
+            "minLength": 1,
+            "type": "string",
+            "description": "닉네임"
+          },
+          "email": { "type": "string", "description": "이메일" },
+          "birthDate": {
+            "type": "string",
+            "description": "생년월일",
+            "format": "date"
+          },
+          "profileImgUrl": {
+            "type": "string",
+            "description": "프로필 이미지 url"
+          },
+          "createDt": {
+            "type": "string",
+            "description": "회원가입 일시",
+            "format": "date-time"
+          },
+          "memberState": { "type": "string", "description": "회원 상태" }
+        },
+        "description": "회원 정보"
+      },
+      "SignUpResponseDto": {
+        "type": "object",
+        "properties": {
+          "member": { "$ref": "#/components/schemas/Member" },
+          "token": { "$ref": "#/components/schemas/AuthTokens" }
+        }
+      },
+      "KakaoAccountDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "카카오계정 대표 이메일"
+          },
+          "has_email": {
+            "type": "boolean",
+            "description": "이메일 존재 여부(deprecated)"
+          },
+          "is_email_valid": {
+            "type": "boolean",
+            "description": "이메일 유효 여부"
+          },
+          "is_email_verified": {
+            "type": "boolean",
+            "description": "이메일 인증 여부"
+          }
+        },
+        "description": "카카오 계정 정보"
+      },
+      "SignInResponseDto": {
+        "required": ["isRegistered", "kakaoId"],
+        "type": "object",
+        "properties": {
+          "kakaoId": {
+            "type": "integer",
+            "description": "카카오 회원번호",
+            "format": "int64"
+          },
+          "kakaoAccount": { "$ref": "#/components/schemas/KakaoAccountDto" },
+          "member": { "$ref": "#/components/schemas/Member" },
+          "token": { "$ref": "#/components/schemas/AuthTokens" },
+          "isRegistered": {
+            "type": "boolean",
+            "description": "회원가입을 한 회원인지 여부"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "JWT": { "type": "http", "scheme": "bearer", "bearerFormat": "JWT" }
+    }
+  }
+}
