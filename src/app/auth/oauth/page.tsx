@@ -1,7 +1,8 @@
 "use client";
 
-import axios from "axios";
-import { setCookie } from "cookies-next";
+import { useGetSignIn } from "@/api/hooks/auth";
+import { pageRoutes } from "@/utils/page-utils";
+import { setAuthInfoCookie } from "@/utils/token-utils";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -10,41 +11,50 @@ const OAuthPage = () => {
   const router = useRouter();
 
   const searchParams = useSearchParams();
-  console.log(searchParams);
   const code = searchParams.get("code");
+
+  const { mutate } = useGetSignIn();
 
   useEffect(() => {
     const kakaoLogin = async () => {
-      try {
-        const { data } = await axios.get(
-          "http://localhost:8080/auth/sign-in/kakao",
-          { params: { code } },
+      if (code)
+        mutate(
+          { code },
+          {
+            onSuccess: (res) => {
+              const kakaoId = res.kakaoId.toString();
+              const email = res?.kakaoAccount?.email;
+              if (!res.isRegistered && kakaoId && email) {
+                router.push(
+                  `${pageRoutes.signUp}?${new URLSearchParams({
+                    kakaoId,
+                    email,
+                  }).toString()}`,
+                );
+              } else {
+                if (
+                  res.token?.accessToken &&
+                  res.token.refreshToken &&
+                  res.member
+                ) {
+                  setAuthInfoCookie({
+                    accessToken: res.token.accessToken,
+                    refreshToken: res.token.refreshToken,
+                    member: res.member,
+                  });
+                  router.push("/");
+                }
+              }
+            },
+            onError: (err) => {
+              console.log(err);
+            },
+          },
         );
-        console.log(data);
-        const kakaoId = data.kakaoId;
-        const email = data.kakaoAccount.email;
-        if (!data.isRegistered) {
-          router.push(
-            `/auth/sign-up?${new URLSearchParams({
-              kakaoId,
-              email,
-            }).toString()}`,
-          ); // ✅ query를 URL 문자열로 변환
-        } else {
-          if (data.token) {
-            console.log("sign-in token", data.token);
-            setCookie("member", data.member);
-            setCookie("token", data.token.accessToken);
-            setCookie("refreshToken", data.token.refreshToken);
-            router.push("/");
-          }
-        }
-      } catch (err) {
-        console.log(err);
-      }
     };
     kakaoLogin();
   }, []);
+
   return (
     <div>
       <h1>OAuth Page</h1>

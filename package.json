@@ -6,9 +6,11 @@
     "dev": "next dev -p 4000",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "generate-api-spec": "curl http://localhost:8080/v3/api-docs > ./src/api/api-docs.json;openapi-generator-cli generate -i ./src/api/api-docs.json -g type script-axios -o ./src/api/model --type-mappings=DateTime=string --skip-validate-spec -t ./src/api/mustaches --global-property models,supportingFiles=api.ts:index.ts;prettier --write ./src/api/api-docs.json;prettier --write ./src/api/model/*.ts"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.74.4",
     "axios": "^1.7.9",
     "clsx": "^2.1.1",
     "cookies-next": "^5.1.0",
@@ -17,6 +19,7 @@
     "react-dom": "^18"
   },
   "devDependencies": {
+    "@tanstack/react-query-devtools": "^5.74.4",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

@@ -1,44 +1,37 @@
 "use client";
 
+import { usePostSignUp } from "@/api/hooks/auth";
+import { SignUpRequestDto } from "@/api/model";
 import { Form } from "@/components/Form";
 import { FormItem } from "@/components/FormItem";
-import axios from "axios";
-import { setCookie } from "cookies-next";
+import { setAuthInfoCookie } from "@/utils/token-utils";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
-interface SignUpRequest {
-  kakaoId: string;
-  nickname: string;
-  email: string;
-  birthDate: string;
-}
-
-const SignInPage = () => {
+const SignUpPage = () => {
   const router = useRouter();
 
+  const { mutate } = usePostSignUp();
+
   const searchParams = useSearchParams();
-  console.log(searchParams);
   const kakaoId = searchParams.get("kakaoId");
   const email = searchParams.get("email");
 
-  const handleOnSubmit = async (values: SignUpRequest) => {
-    console.log(values);
-    try {
-      const response = await axios.post(
-        "http://localhost:8080/auth/sign-up/kakao",
-        values,
-      );
-      if (response.data.token) {
-        console.log("sign-up token", response.data.token);
-        setCookie("member", response.data.member);
-        setCookie("token", response.data.token.accessToken);
-        setCookie("refreshToken", response.data.token.refreshToken);
+  const handleOnSubmit = (values: SignUpRequestDto) => {
+    mutate(values, {
+      onSuccess: (res) => {
+        if (res.token?.accessToken && res.token.refreshToken && res.member)
+          setAuthInfoCookie({
+            accessToken: res.token.accessToken,
+            refreshToken: res.token.refreshToken,
+            member: res.member,
+          });
         router.push("/");
-      }
-    } catch (e) {
-      console.log(e);
-    }
+      },
+      onError: (err) => {
+        console.log(err);
+      },
+    });
   };
 
   useEffect(() => {
@@ -68,4 +61,4 @@ const SignInPage = () => {
   );
 };
 
-export default SignInPage;
+export default SignUpPage;
