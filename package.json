@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "generate-api-spec": "curl http://localhost:8080/v3/api-docs > ./src/api/api-docs.json;openapi-generator-cli generate -i ./src/api/api-docs.json -g type script-axios -o ./src/api/model --type-mappings=DateTime=string --skip-validate-spec -t ./src/api/mustaches --global-property models,supportingFiles=api.ts:index.ts;prettier --write ./src/api/api-docs.json;prettier --write ./src/api/model/*.ts"
+    "api-spec-generate": "curl http://127.0.0.1:8000/openapi.json > ./src/api/model/openapi.json;openapi-generator-cli generate -i ./src/api/model/openapi.json -g typescript-axios -o ./src/api/model --type-mappings=DateTime=string --skip-validate-spec -t ./mustaches --global-property models,supportingFiles=api.ts:index.ts,modelDocs=false;prettier --write ./src/api/model"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.74.4",

@@ -1,0 +1,392 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "FastAPI", "version": "0.1.0" },
+  "paths": {
+    "/v1/auth/sign-in/kakao": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Sign In Kakao",
+        "operationId": "sign_in_kakao_v1_auth_sign_in_kakao_get",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "title": "Code" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse_KakaoSignInResponse_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/sign-up/kakao": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Sign Up Kakao",
+        "operationId": "sign_up_kakao_v1_auth_sign_up_kakao_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/KakaoSignUpRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse_KakaoSignUpResponse_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/members/me": {
+      "get": {
+        "tags": ["Members"],
+        "summary": "Get My Info",
+        "operationId": "get_my_info_v1_members_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse_MemberResponse_"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "APIKeyHeader": [] }]
+      }
+    },
+    "/v1/members/members": {
+      "get": {
+        "tags": ["Members"],
+        "summary": "Get Members",
+        "operationId": "get_members_v1_members_members_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse_List_MemberResponse__"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/members/{memberNo}": {
+      "get": {
+        "tags": ["Members"],
+        "summary": "Get Member",
+        "operationId": "get_member_v1_members__memberNo__get",
+        "parameters": [
+          {
+            "name": "memberNo",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "title": "Memberno" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse_MemberResponse_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BaseResponse_KakaoSignInResponse_": {
+        "properties": {
+          "messageCode": { "type": "string", "title": "Messagecode" },
+          "message": { "type": "string", "title": "Message" },
+          "result": {
+            "anyOf": [
+              { "$ref": "#/components/schemas/KakaoSignInResponse" },
+              { "type": "null" }
+            ]
+          }
+        },
+        "type": "object",
+        "required": ["messageCode", "message"],
+        "title": "BaseResponse[KakaoSignInResponse]"
+      },
+      "BaseResponse_KakaoSignUpResponse_": {
+        "properties": {
+          "messageCode": { "type": "string", "title": "Messagecode" },
+          "message": { "type": "string", "title": "Message" },
+          "result": {
+            "anyOf": [
+              { "$ref": "#/components/schemas/KakaoSignUpResponse" },
+              { "type": "null" }
+            ]
+          }
+        },
+        "type": "object",
+        "required": ["messageCode", "message"],
+        "title": "BaseResponse[KakaoSignUpResponse]"
+      },
+      "BaseResponse_List_MemberResponse__": {
+        "properties": {
+          "messageCode": { "type": "string", "title": "Messagecode" },
+          "message": { "type": "string", "title": "Message" },
+          "result": {
+            "anyOf": [
+              {
+                "items": { "$ref": "#/components/schemas/MemberResponse" },
+                "type": "array"
+              },
+              { "type": "null" }
+            ],
+            "title": "Result"
+          }
+        },
+        "type": "object",
+        "required": ["messageCode", "message"],
+        "title": "BaseResponse[List[MemberResponse]]"
+      },
+      "BaseResponse_MemberResponse_": {
+        "properties": {
+          "messageCode": { "type": "string", "title": "Messagecode" },
+          "message": { "type": "string", "title": "Message" },
+          "result": {
+            "anyOf": [
+              { "$ref": "#/components/schemas/MemberResponse" },
+              { "type": "null" }
+            ]
+          }
+        },
+        "type": "object",
+        "required": ["messageCode", "message"],
+        "title": "BaseResponse[MemberResponse]"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": { "$ref": "#/components/schemas/ValidationError" },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "KakaoAccount": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "title": "Email",
+            "description": "카카오계정 대표 이메일"
+          },
+          "hasEmail": {
+            "type": "boolean",
+            "title": "Hasemail",
+            "description": "이메일 존재 여부(deprecated)"
+          },
+          "isEmailValid": {
+            "type": "boolean",
+            "title": "Isemailvalid",
+            "description": "이메일 유효 여부"
+          },
+          "isEmailVerified": {
+            "type": "boolean",
+            "title": "Isemailverified",
+            "description": "이메일 인증 여부"
+          }
+        },
+        "type": "object",
+        "required": ["email", "hasEmail", "isEmailValid", "isEmailVerified"],
+        "title": "KakaoAccount"
+      },
+      "KakaoSignInResponse": {
+        "properties": {
+          "isRegistered": {
+            "type": "boolean",
+            "title": "Isregistered",
+            "description": "회원가입을 한 회원인지 여부"
+          },
+          "kakaoId": {
+            "type": "integer",
+            "title": "Kakaoid",
+            "description": "카카오 회원 번호"
+          },
+          "kakaoAccount": {
+            "$ref": "#/components/schemas/KakaoAccount",
+            "description": "카카오 계정 정보"
+          },
+          "member": {
+            "anyOf": [
+              { "$ref": "#/components/schemas/MemberResponse" },
+              { "type": "null" }
+            ],
+            "description": "등록된 회원"
+          },
+          "accessToken": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Accesstoken",
+            "description": "액세스 토큰"
+          }
+        },
+        "type": "object",
+        "required": ["isRegistered", "kakaoId", "kakaoAccount", "member"],
+        "title": "KakaoSignInResponse"
+      },
+      "KakaoSignUpRequest": {
+        "properties": {
+          "kakaoId": {
+            "type": "integer",
+            "title": "Kakaoid",
+            "description": "카카오 회원 번호"
+          },
+          "nickname": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 1,
+            "title": "Nickname",
+            "description": "닉네임"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email",
+            "description": "이메일"
+          },
+          "birthDate": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Birthdate",
+            "description": "생년월일"
+          }
+        },
+        "type": "object",
+        "required": ["kakaoId", "nickname", "email", "birthDate"],
+        "title": "KakaoSignUpRequest"
+      },
+      "KakaoSignUpResponse": {
+        "properties": {
+          "member": {
+            "$ref": "#/components/schemas/MemberResponse",
+            "description": "등록된 회원"
+          },
+          "accessToken": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Accesstoken",
+            "description": "액세스 토큰"
+          }
+        },
+        "type": "object",
+        "required": ["member"],
+        "title": "KakaoSignUpResponse"
+      },
+      "MemberResponse": {
+        "properties": {
+          "memberNo": {
+            "type": "integer",
+            "title": "Memberno",
+            "description": "회원 번호"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email",
+            "description": "이메일"
+          },
+          "kakaoId": {
+            "type": "integer",
+            "title": "Kakaoid",
+            "description": "카카오 회원 번호"
+          },
+          "nickname": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 1,
+            "title": "Nickname",
+            "description": "닉네임"
+          },
+          "birthDate": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Birthdate",
+            "description": "생년월일"
+          }
+        },
+        "type": "object",
+        "required": ["memberNo", "email", "kakaoId", "nickname", "birthDate"],
+        "title": "MemberResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": { "anyOf": [{ "type": "string" }, { "type": "integer" }] },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": { "type": "string", "title": "Message" },
+          "type": { "type": "string", "title": "Error Type" }
+        },
+        "type": "object",
+        "required": ["loc", "msg", "type"],
+        "title": "ValidationError"
+      }
+    },
+    "securitySchemes": {
+      "APIKeyHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
+      }
+    }
+  }
+}
