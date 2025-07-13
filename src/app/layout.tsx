@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import clsx from "clsx";
-import { QueryProvider } from "@/components/QueryProvider";
+import Providers from "./provider";
 
 export const metadata: Metadata = {
   title: "ZZOL",
@@ -24,7 +24,7 @@ export default function RootLayout({
             "min-h-screen",
           )}
         >
-          <QueryProvider>{children}</QueryProvider>
+          <Providers>{children}</Providers>
         </div>
       </body>
     </html>
