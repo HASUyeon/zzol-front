@@ -1,35 +1,45 @@
-import { Member } from "@/api/model";
-import { deleteCookie, getCookie, setCookie } from "cookies-next";
-import { env } from "process";
+import { setCookie, getCookie, deleteCookie } from "cookies-next";
 
-const tokenName = env.TOKEN || "token";
-const refreshTokenName = env.REFRESH_TOKEN || "refreshToken";
-const memberName = env.MEMBER || "member";
-
-export const setAuthInfoCookie = ({
-  accessToken,
-  refreshToken,
-  member,
-}: {
-  accessToken: string;
-  refreshToken: string;
-  member: Member;
-}) => {
-  setCookie(tokenName, accessToken);
-  setCookie(refreshTokenName, refreshToken);
-  setCookie(memberName, member);
+type TokenParamsType = {
+  token?: string;
+  tokenDueDt?: string;
+  refreshToken?: string;
+  refreshTokenDueDt?: string;
+  userInfo?: object;
 };
 
-export const getAuthInfoCookie = async () => {
-  const token = await getCookie(tokenName);
-  const refreshToken = await getCookie(refreshTokenName);
-  const member = await getCookie(memberName);
+const accessTokenName = process.env.NEXT_PUBLIC_ACCESS_TOKEN_NAME ?? "token";
+const refreshTokenName =
+  process.env.NEXT_PUBLIC_REFRESH_TOKEN_NAME ?? "refreshToken";
+const userInfoName = process.env.NEXT_PUBLIC_USER_INFO_NAME ?? "userInfo";
 
-  return { token, refreshToken, member };
-};
+export class TokenUtils {
+  static getTokenName() {
+    return { accessTokenName, refreshTokenName, userInfoName };
+  }
 
-export const removeAuthInfoCookie = () => {
-  deleteCookie(tokenName);
-  deleteCookie(refreshTokenName);
-  deleteCookie(memberName);
-};
+  static setToken({ token, refreshToken, userInfo }: TokenParamsType) {
+    if (token) {
+      setCookie(accessTokenName, token);
+    }
+    if (refreshToken) {
+      setCookie(refreshTokenName, refreshToken);
+    }
+    if (userInfo) {
+      setCookie(userInfoName, JSON.stringify(userInfo));
+    }
+  }
+
+  static async getToken() {
+    const token = (await getCookie(accessTokenName)) as string;
+    const refreshToken = (await getCookie(refreshTokenName)) as string;
+    const userInfo = await getCookie(userInfoName);
+    return { token, refreshToken, userInfo };
+  }
+
+  static removeAllToken() {
+    deleteCookie(accessTokenName);
+    deleteCookie(refreshTokenName);
+    deleteCookie(userInfoName);
+  }
+}
