@@ -8,9 +8,9 @@ import {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (!request.cookies.get("token") || !request.cookies.get("refreshToken")) {
-    if (pageForOnlyMember.includes(pathname))
-      return NextResponse.redirect(new URL(pageRoutes.signIn, request.url));
+  if (!request.cookies.get("token")) {
+    if (!pathname.startsWith("/auth"))
+      return NextResponse.redirect(new URL("/auth/sign-in", request.url));
     return NextResponse.next();
   } else {
     if (pageForOnlyGuest.includes(pathname))
