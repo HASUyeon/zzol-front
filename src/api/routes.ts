@@ -1,6 +1,7 @@
-export const SERVER = process.env.NEXT_PUBLIC_SERVER || "";
+import { API_HOST } from "./hosts";
 
 export const apiRoutes = {
-  signInKakao: `${SERVER}/auth/sign-in/kakao`,
-  signUpKakao: `${SERVER}/auth/sign-up/kakao`,
+  getKakaoSignIn: `${API_HOST}/auth/sign-in/kakao`,
+  postSignUpKakao: `${API_HOST}/auth/sign-up/kakao`,
+  membersMe: `${API_HOST}/members/me`,
 };

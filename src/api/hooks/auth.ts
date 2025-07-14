@@ -1,23 +1,37 @@
-import { useMutation } from "@tanstack/react-query";
-import request from "../request";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  BaseResponseKakaoSignInResponse,
+  BaseResponseKakaoSignUpResponse,
+  BaseResponseMemberResponse,
+  KakaoSignUpRequest,
+} from "../model";
+import { api } from "../requests";
 import { apiRoutes } from "../routes";
 import { AxiosError } from "axios";
-import {
-  SignInResponseDto,
-  SignUpRequestDto,
-  SignUpResponseDto,
-} from "../model";
 
 export const useGetSignIn = () => {
-  return useMutation<SignInResponseDto, AxiosError, { code?: string }>({
-    mutationFn: (data) => request.get(apiRoutes.signInKakao, { params: data }),
-    retry: false,
+  return useMutation<
+    BaseResponseKakaoSignInResponse,
+    AxiosError,
+    { code: string }
+  >({
+    mutationFn: (params) => api.get(apiRoutes.getKakaoSignIn, { params }),
   });
 };
 
 export const usePostSignUp = () => {
-  return useMutation<SignUpResponseDto, AxiosError, SignUpRequestDto>({
-    mutationFn: (data) => request.post(apiRoutes.signUpKakao, data),
-    retry: false,
+  return useMutation<
+    BaseResponseKakaoSignUpResponse,
+    AxiosError,
+    KakaoSignUpRequest
+  >({
+    mutationFn: (data) => api.post(apiRoutes.postSignUpKakao, data),
+  });
+};
+
+export const useGetMe = () => {
+  return useQuery<BaseResponseMemberResponse>({
+    queryKey: [apiRoutes.membersMe],
+    queryFn: () => api.get(apiRoutes.membersMe),
   });
 };

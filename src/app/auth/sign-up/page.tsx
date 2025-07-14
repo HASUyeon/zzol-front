@@ -1,13 +1,14 @@
 "use client";
 
 import { usePostSignUp } from "@/api/hooks/auth";
-import { SignUpRequestDto } from "@/api/model";
+import { KakaoSignUpRequest } from "@/api/model";
 import { Form } from "@/components/Form";
 import { FormItem } from "@/components/FormItem";
-import { setAuthInfoCookie } from "@/utils/token-utils";
+import { setCookie } from "cookies-next";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
+const SignUpPage = () => {
 const SignUpPage = () => {
   const router = useRouter();
 
@@ -17,19 +18,19 @@ const SignUpPage = () => {
   const kakaoId = searchParams.get("kakaoId");
   const email = searchParams.get("email");
 
-  const handleOnSubmit = (values: SignUpRequestDto) => {
+  const { mutate } = usePostSignUp();
+
+  const handleOnSubmit = async (values: KakaoSignUpRequest) => {
+    console.log(values);
+
     mutate(values, {
-      onSuccess: (res) => {
-        if (res.token?.accessToken && res.token.refreshToken && res.member)
-          setAuthInfoCookie({
-            accessToken: res.token.accessToken,
-            refreshToken: res.token.refreshToken,
-            member: res.member,
-          });
-        router.push("/");
+      onSuccess: (data) => {
+        setCookie("member", data.result?.member);
+        setCookie("token", data.result?.accessToken);
+        router.push("/me");
       },
-      onError: (err) => {
-        console.log(err);
+      onError: (e) => {
+        console.log(e);
       },
     });
   };
@@ -61,4 +62,5 @@ const SignUpPage = () => {
   );
 };
 
+export default SignUpPage;
 export default SignUpPage;

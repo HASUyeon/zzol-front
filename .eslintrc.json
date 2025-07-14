@@ -1,7 +1,7 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "prettier"],
+  "plugins": ["@typescript-eslint", "@tanstack/query", "prettier"],
   "parserOptions": {
     "project": "./tsconfig.json",
     "ignorePatterns": [".eslintrc.js"]
@@ -10,10 +10,12 @@
     "browser": true,
     "node": true
   },
+
   "extends": [
     "next/core-web-vitals",
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended",
+    "plugin:@tanstack/eslint-plugin-query/recommended",
     "prettier"
   ],
   "rules": {
